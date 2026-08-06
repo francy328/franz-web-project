@@ -1,25 +1,9 @@
-/**
- * main.ts
- *
- * Bootstraps Vuetify and other plugins then mounts the App`
- */
+import "./assets/main.css";
+import { createApp } from "vue";
+import App from "./App.vue";
+import { Amplify } from "aws-amplify";
+import outputs from "../amplify_outputs.json";
 
-// Composables
-import { createApp } from 'vue'
+Amplify.configure(outputs);
 
-// Plugins
-import { registerPlugins } from '@/plugins'
-
-// Components
-import App from './App.vue'
-
-// Styles
-import 'unfonts.css'
-import './styles/tailwind.css'
-import './styles/main.scss'
-
-const app = createApp(App)
-
-registerPlugins(app)
-
-app.mount('#app')
+createApp(App).mount("#app");

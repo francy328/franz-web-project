@@ -14,6 +14,9 @@ dist-ssr
 coverage
 *.local
 
+/cypress/videos/
+/cypress/screenshots/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,9 +29,7 @@ coverage
 
 *.tsbuildinfo
 
-
 # amplify
-node_modules
 .amplify
 amplify_outputs*
 amplifyconfiguration*
