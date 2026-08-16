@@ -1,10 +1,16 @@
-<script setup lang="ts">
-import Todos from './components/Todos.vue'
-</script>
-
-<template>
-  <main>
-    <Todos />
-  </main>
+<template>  
+  <MainNav />
 </template>
 
+<script>
+  import MainNav from "@/components/MainNav.vue";
+
+  export default {
+    name: "App",
+    components:{
+      MainNav,
+    }
+};
+
+
+</script>
