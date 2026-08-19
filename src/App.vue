@@ -1,5 +1,8 @@
 <template>  
-  <MainNav />
+<main-nav />
+ <!-- <router-link to="/">Home-link </router-link>
+ <router-link to="/work">work-link </router-link> -->
+ <router-view />
 </template>
 
 <script>
