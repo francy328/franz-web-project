@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-slate-900 text-slate-100">
+  <div class="flex min-h-screen items-center justify-center bg-black text-slate-100">
     <div class="max-w-4xl px-6 py-10">
 
       <h1 class="text-4xl font-bold mb-6">
@@ -26,8 +26,7 @@
           <p class="text-lg">
             Ho realizzato questa applicazione web per documentare in modo strutturato le attività,
             le sfide tecniche e i percorsi di apprendimento che affronto.
-             Un raccogliere di idee, approfondimenti, soluzioni e riflessioni professionali e non solo.  
-            
+            Un raccogliere di idee, approfondimenti, soluzioni e riflessioni professionali e non solo.
           </p>
         </div>
       </div>
