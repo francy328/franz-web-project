@@ -23,13 +23,17 @@
             e scalabili.
           </p>
 
-          <p class="text-lg">
-            Ho realizzato questa applicazione web per documentare in modo strutturato le attività,
-            le sfide tecniche e i percorsi di apprendimento che affronto.
-            Un raccogliere di idee, approfondimenti, soluzioni e riflessioni professionali e non solo.
-          </p>
         </div>
       </div>
+
+      <h2 class="text-2xl font-semibold mt-6 mb-3">Perché ho creato questa applicazione</h2>
+      <p class="mb-3">
+       Ho realizzato questa applicazione web per documentare in modo strutturato le attività,
+       le sfide tecniche e i percorsi di apprendimento che affronto.
+       Un raccolta di idee, approfondimenti, soluzioni e riflessioni professionali e non solo.
+      </p>
+
+      
 
       <h2 class="text-2xl font-semibold mt-6 mb-3">Esperienza professionale</h2>
       <p class="mb-3">
