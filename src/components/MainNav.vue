@@ -1,7 +1,7 @@
 <template>
   <header :class="['w-full', 'text-sm', headerHeightClass]">
     <div class="fixed left-0 top-0 w-full bg-slate-800/90 backdrop-blur-sm border-b border-slate-700 z-50">
-      <div class="mx-auto flex items-center justify-between h-16 px-4 md:px-8 max-w-6xl">
+      <div class="flex items-center justify-between h-16 px-4 md:px-8 w-full">
 
         <!-- LOGO -->
         <router-link
@@ -23,7 +23,7 @@
         </button>
 
         <!-- MENU DESKTOP -->
-        <nav class="hidden md:block">
+        <nav class="hidden md:block ml-24">
           <ul class="flex list-none">
             <li
               v-for="menuItem in menuItems"
@@ -39,6 +39,9 @@
             </li>
           </ul>
         </nav>
+        <div class="ml-auto flex h-full items-center">
+          <login-button/>  
+        </div>
       </div>
 
       <!-- MENU MOBILE -->
@@ -62,14 +65,19 @@
         </ul>
       </div>
 
-      <the-subnav v-if="isLoggedIn" />
+    
     </div>
   </header>
 </template>
 
 <script>
+import LoginButton from './LoginButton.vue';
+
 export default {
   name: "MainNav",
+    components: {
+      LoginButton,
+  },
 
   data() {
     return {
