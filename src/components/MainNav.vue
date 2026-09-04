@@ -39,9 +39,21 @@
             </li>
           </ul>
         </nav>
-        <div class="ml-auto flex h-full items-center">
-          <login-button/>  
+
+       <!--
+         <div class="ml-auto flex h-full items-center">
+          <login-button @click="loginUser" />
+        </div> 
+          -->
+
+         
+          <div class="ml-auto flex h-full items-center">
+            <profile-image v-if="isLoggedIn" />
+            <login-button v-else @click="loginUser" />
         </div>
+      
+        
+
       </div>
 
       <!-- MENU MOBILE -->
@@ -72,11 +84,13 @@
 
 <script>
 import LoginButton from './LoginButton.vue';
+import ProfileImage from './ProfileImage.vue';
 
 export default {
   name: "MainNav",
     components: {
       LoginButton,
+      ProfileImage,
   },
 
   data() {
@@ -99,6 +113,16 @@ export default {
         "h-16": !this.isLoggedIn,
         "h-auto": this.isLoggedIn,
       };
+    },
+  },
+    methods: {
+    loginUser() {
+      console.log("devo fare la chiamata");
+
+      this.$router.push('/login');
+
+
+      //this.isLoggedIn = !this.isLoggedIn;
     },
   },
 };

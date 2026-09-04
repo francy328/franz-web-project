@@ -6,6 +6,7 @@ import WorkView from "@/views/WorkView.vue";
 import TutorialView from "@/views/TutorialView.vue";
 import LezioniView from "@/views/LezioniView.vue";
 import GialloRossoView from "@/views/GialloRossoView.vue";
+import LoginView from '@/views/LoginView.vue';
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path: "/giallorosso",
     name: "giallorosso",
     component: GialloRossoView,
+  },
+    {
+    path: "/login",
+    name: "login",
+    component: LoginView,
   },
 ];
 
