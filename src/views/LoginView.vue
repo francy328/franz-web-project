@@ -1,21 +1,36 @@
 <template>
-   <div class="bg-black min-h-screen px-4 py-12 text-slate-100">
-  <Authenticator>
-    <template v-slot="{ user,signOut }">
-      <h1> ciao {{ user.username }}</h1>
-      <button @click="signOut">Sign Out</button>
-    </template>
-  </Authenticator>
+  <div class="bg-black min-h-screen flex justify-center pt-32 text-slate-100">
+    <Authenticator>
+      <template v-slot="{ user }">
+        {{ saveUser(user) }}
+        <h1 class="text-slate-100 text-4xl font-bold text-center">
+          Ciao {{ user.signInDetails?.loginId }}
+        </h1>
+      </template>
+    </Authenticator>
   </div>
 </template>
 
 <script>
 import { Authenticator } from "@aws-amplify/ui-vue";
 import "@aws-amplify/ui-vue/styles.css";
+import { useAuthStore } from "@/components/gestioneLogin";
 
 export default {
   components: {
     Authenticator,
+  },
+  setup() {
+    const authStore = useAuthStore();
+
+    const saveUser = (user) => {
+      console.log("save user");
+      authStore.setUser(user);
+    };
+
+    return {
+      saveUser,
+    };
   },
 };
 </script>

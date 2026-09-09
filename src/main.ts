@@ -5,6 +5,7 @@ import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
 import router from "@/router";
 import "@/index.css";
+import { createPinia } from 'pinia'
 
 import { I18n } from "aws-amplify/utils";
 import { translations } from "@aws-amplify/ui";
@@ -49,7 +50,14 @@ I18n.setLanguage("it");
 // Configurazione Amplify
 Amplify.configure(outputs);
 
-createApp(App).use(router).mount("#app");
+//createApp(App).use(router).mount("#app");
+
+createApp(App)
+  .use(createPinia())
+  .use(router)
+  .mount("#app");
+
+  
 
 // Debug (opzionale)
 console.log(translations);

@@ -1,8 +1,9 @@
 <template>
-  <header :class="['w-full', 'text-sm', headerHeightClass]">
-    <div class="fixed left-0 top-0 w-full bg-slate-800/90 backdrop-blur-sm border-b border-slate-700 z-50">
+  <header :class="['w-full', 'text-sm', ]">
+    <div
+      class="fixed left-0 top-0 w-full bg-slate-800/90 backdrop-blur-sm border-b border-slate-700 z-50"
+    >
       <div class="flex items-center justify-between h-16 px-4 md:px-8 w-full">
-
         <!-- LOGO -->
         <router-link
           :to="{ name: 'Home' }"
@@ -12,13 +13,18 @@
         </router-link>
 
         <!-- HAMBURGER (solo mobile) -->
-        <button
-          class="md:hidden text-slate-200"
-          @click="isOpen = !isOpen"
-        >
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M4 6h16M4 12h16M4 18h16" />
+        <button class="md:hidden text-slate-200" @click="isOpen = !isOpen">
+          <svg
+            class="w-7 h-7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
 
@@ -40,20 +46,10 @@
           </ul>
         </nav>
 
-       <!--
-         <div class="ml-auto flex h-full items-center">
-          <login-button @click="loginUser" />
-        </div> 
-          -->
-
-         
-          <div class="ml-auto flex h-full items-center">
-            <profile-image v-if="isLoggedIn" />
-            <login-button v-else @click="loginUser" />
+        <div class="ml-auto flex h-full items-center">
+          <logout-button v-if="isAuthenticated" @click="logoutUser" />
+          <login-button v-else @click="loginUser" />
         </div>
-      
-        
-
       </div>
 
       <!-- MENU MOBILE -->
@@ -62,10 +58,7 @@
         class="md:hidden bg-slate-800 border-t border-slate-700 px-4 pb-4"
       >
         <ul class="flex flex-col space-y-3">
-          <li
-            v-for="menuItem in menuItems"
-            :key="menuItem.text"
-          >
+          <li v-for="menuItem in menuItems" :key="menuItem.text">
             <router-link
               :to="menuItem.url"
               class="block text-slate-300 hover:text-white py-2"
@@ -76,21 +69,21 @@
           </li>
         </ul>
       </div>
-
-    
     </div>
   </header>
 </template>
 
 <script>
-import LoginButton from './LoginButton.vue';
-import ProfileImage from './ProfileImage.vue';
+import LoginButton from "./LoginButton.vue";
+import LogoutButton from "./LogoutButton.vue";
+import { useAuthStore } from "@/components/gestioneLogin.js";
+
 
 export default {
   name: "MainNav",
-    components: {
-      LoginButton,
-      ProfileImage,
+  components: {
+    LoginButton,
+    LogoutButton,
   },
 
   data() {
@@ -101,13 +94,27 @@ export default {
         { text: "Tutorial", url: { name: "tutorial" } },
         { text: "Lezioni", url: { name: "lezioni" } },
         { text: "Work", url: { name: "work" } },
-        { text: "Asfalto sentieri e passione giallorossa", url: { name: "giallorosso" } },
+        {
+          text: "Asfalto sentieri e passione giallorossa",
+          url: { name: "giallorosso" },
+        },
       ],
-      isLoggedIn: false,
+      isLoggedIn: true,
     };
   },
-
   computed: {
+    authStore() {
+      return useAuthStore();
+    },
+
+    isAuthenticated() {
+      return this.authStore.authenticated;
+    },
+
+    user() {
+      return this.authStore.user;
+    },
+
     headerHeightClass() {
       return {
         "h-16": !this.isLoggedIn,
@@ -115,14 +122,12 @@ export default {
       };
     },
   },
-    methods: {
+  methods: {
     loginUser() {
-      console.log("devo fare la chiamata");
-
-      this.$router.push('/login');
-
-
-      //this.isLoggedIn = !this.isLoggedIn;
+      this.$router.push("/login");
+    },
+    logoutUser() {
+      this.$router.push("/logout");
     },
   },
 };

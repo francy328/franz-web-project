@@ -7,6 +7,7 @@ import TutorialView from "@/views/TutorialView.vue";
 import LezioniView from "@/views/LezioniView.vue";
 import GialloRossoView from "@/views/GialloRossoView.vue";
 import LoginView from '@/views/LoginView.vue';
+import LogoutView from '@/views/LogoutView.vue';
 
 const routes = [
   {
@@ -35,10 +36,15 @@ const routes = [
     name: "giallorosso",
     component: GialloRossoView,
   },
-    {
+  {
     path: "/login",
     name: "login",
     component: LoginView,
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: LogoutView,
   },
 ];
 

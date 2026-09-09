@@ -1,18 +1,21 @@
 <template>  
 <main-nav />
- <!-- <router-link to="/">Home-link </router-link>
- <router-link to="/work">work-link </router-link> -->
  <router-view />
 </template>
 
 <script>
   import MainNav from "@/components/MainNav.vue";
+  import { useAuthStore } from "@/components/gestioneLogin";
 
   export default {
     name: "App",
     components:{
       MainNav,
-    }
+    },
+    async mounted() {
+    const authStore = useAuthStore();
+    await authStore.checkAuth();
+  }
 };
 
 
