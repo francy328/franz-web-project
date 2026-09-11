@@ -1,7 +1,7 @@
 <template>
   <header :class="['w-full', 'text-sm', ]">
     <div
-      class="fixed left-0 top-0 w-full bg-slate-800/90 backdrop-blur-sm border-b border-slate-700 z-50"
+      class="fixed left-0 top-0 w-full bg-black backdrop-blur-sm border-b border-slate-700 z-50"
     >
       <div class="flex items-center justify-between h-16 px-4 md:px-8 w-full">
         <!-- LOGO -->
