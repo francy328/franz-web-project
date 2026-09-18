@@ -109,11 +109,6 @@ const client = generateClient<Schema>();
 
 const activities = ref<Array<Schema['Activities']["type"]>>([]);
 
-// const salva = () => {
-//   console.log(form.value)
-// }
-
-
 async function salva() {
   console.log(client.models);
   await client.models.Activities.create(form.value);
