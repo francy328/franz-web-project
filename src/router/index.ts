@@ -8,6 +8,7 @@ import LezioniView from "@/views/LezioniView.vue";
 import GialloRossoView from "@/views/GialloRossoView.vue";
 import LoginView from '@/views/LoginView.vue';
 import LogoutView from '@/views/LogoutView.vue';
+import Todos from "@/components/Todos.vue";
 
 const routes = [
   {
@@ -45,6 +46,11 @@ const routes = [
     path: "/logout",
     name: "logout",
     component: LogoutView,
+  },
+   {
+    path: "/todo",
+    name: "todo",
+    component: Todos,
   },
 ];
 
