@@ -157,24 +157,24 @@ const activities = ref<Array<Schema['Activities']["type"]>>([]);
 
 async function salva() {
   try {
-
     const file = selectedFile.value;
+
+    if (!file) {
+      alert("Seleziona un file");
+      return;
+    }
 
     const filePath = `attachments/${Date.now()}-${file.name}`;
 
-    // Upload su S3
     await uploadData({
       path: filePath,
       data: file
     }).result;
 
-    // Salvataggio record su DynamoDB
     await client.models.Activities.create({
       ...form.value,
       allegato: filePath
     });
-
-    console.log("Salvataggio completato");
 
   } catch (error) {
     console.error(error);
@@ -182,11 +182,20 @@ async function salva() {
 }
 
 
-const selectedFile = ref(null);
 
-function onFileSelected(event) {
-  selectedFile.value = event.target.files[0];
+const selectedFile = ref<File | null>(null);
+
+  function onFileSelected(event: Event) {
+  const target = event.target as HTMLInputElement;
+
+  if (target.files && target.files.length > 0) {
+    selectedFile.value = target.files[0];
+  }
 }
+
+// function onFileSelected(event) {
+//   selectedFile.value = event.target.files[0];
+// }
 
 
 </script>
