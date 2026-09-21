@@ -1,7 +1,7 @@
 <template>
-  <div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow">
+  <div class="max-w-5xl mx-auto p-6 mt-20 bg-white rounded-lg shadow">
     <h2 class="text-2xl font-bold mb-6 text-gray-800">
-      Raccolta Esperienze
+      Registra e organizza le tue esperienze di lavoro, università e tempo libero in un unico spazio personale. Conserva attività, appunti e momenti significativi per consultarli quando ne hai bisogno.
     </h2>
 
     <form @submit.prevent="salva" class="space-y-4">
@@ -49,10 +49,39 @@
 
       </div>
 
+      <!-- Allegato -->
+<div>
+  <label
+    for="file"
+    class="block text-sm font-medium text-gray-700 mb-1"
+  >
+    📎 Allegato
+  </label>
+
+  <input
+    id="file"
+    type="file"
+    @change="onFileSelected"
+    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+    class="w-full rounded-md border border-gray-300 px-3 py-2
+           focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+           outline-none"
+  />
+
+  <p
+    v-if="selectedFile"
+    class="mt-2 text-sm text-gray-600"
+  >
+    File selezionato: {{ selectedFile.name }}
+  </p>
+</div>
+
+<br><br>
+
       <!-- Note / Appunti -->
       <div>
         <label
-          for="note"
+          for="nota"
           class="block text-sm font-medium text-gray-700 mb-1"
         >
           📝 Note
@@ -60,7 +89,7 @@
 
         <textarea
           id="note"
-          v-model="form.note"
+          v-model="form.nota"
           rows="8"
           placeholder="Scrivi qui i tuoi appunti, un resoconto dell'escursione, note di lavoro..."
           class="w-full rounded-md border border-gray-300 px-3 py-2
@@ -97,22 +126,67 @@
 import { ref } from 'vue';
 import type { Schema } from '../../amplify/data/resource';
 import { generateClient } from 'aws-amplify/data';
+import { uploadData } from 'aws-amplify/storage';
 
 
 const form = ref({
   data: '',
   categoria: '',
-  note: ''
+  nota: ''
 })
 
 const client = generateClient<Schema>();
 
 const activities = ref<Array<Schema['Activities']["type"]>>([]);
 
+// async function salva() {
+//   debugger;
+
+//   await uploadData({
+//       path: `attachments/${Date.now()}-${file.name}`,
+//       data: file
+//   }).result;
+
+
+
+//   console.log(client.models);
+//   await client.models.Activities.create(form.value);
+//   console.log(form.value);
+//   console.log(selectedFile.value);
+// }
+
 async function salva() {
-  console.log(client.models);
-  await client.models.Activities.create(form.value);
-  console.log(form.value);
+  try {
+
+    const file = selectedFile.value;
+
+    const filePath = `attachments/${Date.now()}-${file.name}`;
+
+    // Upload su S3
+    await uploadData({
+      path: filePath,
+      data: file
+    }).result;
+
+    // Salvataggio record su DynamoDB
+    await client.models.Activities.create({
+      ...form.value,
+      allegato: filePath
+    });
+
+    console.log("Salvataggio completato");
+
+  } catch (error) {
+    console.error(error);
+  }
 }
+
+
+const selectedFile = ref(null);
+
+function onFileSelected(event) {
+  selectedFile.value = event.target.files[0];
+}
+
 
 </script>

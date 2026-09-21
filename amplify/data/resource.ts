@@ -12,6 +12,7 @@ const schema = a.schema({
       nota: a.string(),
       data: a.date(),
       categoria : a.string(),
+      allegato: a.string()
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
