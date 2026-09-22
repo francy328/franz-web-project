@@ -1,34 +1,30 @@
 <template>
   <div class="flex flex-col min-h-screen items-center justify-center">
-      <div v-if="isAuthenticated">
-    Ciao {{ user?.username }}
-  </div>
+    
+    <div v-if="isAuthenticated">
+      Ciao {{ user?.username }}
+    </div>
 
-  <div v-else>
-    Utente non autenticato
-  </div>
+    <div v-else>
+      Utente non autenticato
+    </div>
 
-  <h1 class="text-4xl font-bold">Lezioni View----- under construction</h1>
-</div>
+    <br><br>
+
+    <h1 class="text-4xl font-bold">
+      Lezioni View ----- under construction
+    </h1>
+
+  </div>
 </template>
 
-<script>
-import { useAuthStore } from "@/components/gestioneLogin";
-export default { 
-    name:'RicercaView',
-     computed: {
-    authStore() {
-      return useAuthStore();
-    },
+<script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '@/components/gestioneLogin'
 
-    isAuthenticated() {
-      return this.authStore.authenticated;
-    },
+const authStore = useAuthStore()
 
-    user() {
-      return this.authStore.user;
-    },
-  },
-}
+const isAuthenticated = computed(() => authStore.authenticated)
 
+const user = computed(() => authStore.user)
 </script>

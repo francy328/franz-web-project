@@ -9,6 +9,7 @@ specifies that any user authenticated via an API key can "create", "read",
 const schema = a.schema({
   Activities: a
     .model({
+      titolo: a.string(),
       nota: a.string(),
       categoria : a.string(),
       allegato: a.string()
