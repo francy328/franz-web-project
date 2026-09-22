@@ -15,7 +15,7 @@
 <script>
 import { useAuthStore } from "@/components/gestioneLogin";
 export default { 
-    name:'LezioniView',
+    name:'RicercaView',
      computed: {
     authStore() {
       return useAuthStore();

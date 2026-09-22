@@ -9,7 +9,7 @@
       <!-- Data e Categoria sulla stessa riga -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <div>
+        <!-- <div>
           <label
             for="data"
             class="block text-sm font-medium text-gray-700 mb-1"
@@ -24,7 +24,7 @@
                    focus:border-blue-500 focus:ring-2 focus:ring-blue-200
                    outline-none"
           />
-        </div>
+        </div> -->
 
         <div>
           <label
@@ -130,7 +130,6 @@ import { uploadData } from 'aws-amplify/storage';
 
 
 const form = ref({
-  data: '',
   categoria: '',
   nota: ''
 })
@@ -138,22 +137,6 @@ const form = ref({
 const client = generateClient<Schema>();
 
 const activities = ref<Array<Schema['Activities']["type"]>>([]);
-
-// async function salva() {
-//   debugger;
-
-//   await uploadData({
-//       path: `attachments/${Date.now()}-${file.name}`,
-//       data: file
-//   }).result;
-
-
-
-//   console.log(client.models);
-//   await client.models.Activities.create(form.value);
-//   console.log(form.value);
-//   console.log(selectedFile.value);
-// }
 
 async function salva() {
   try {
@@ -176,8 +159,11 @@ async function salva() {
       allegato: filePath
     });
 
+    alert("✅ File caricato con successo!");
+
   } catch (error) {
     console.error(error);
+    alert("❌ Errore durante il caricamento del file");
   }
 }
 
@@ -192,10 +178,5 @@ const selectedFile = ref<File | null>(null);
     selectedFile.value = target.files[0];
   }
 }
-
-// function onFileSelected(event) {
-//   selectedFile.value = event.target.files[0];
-// }
-
 
 </script>

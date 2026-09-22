@@ -1,10 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import HomeView from "@/views/HomeView.vue";
-//import JobResultsView from "@/views/TutorialView.vue";
-import WorkView from "@/views/WorkView.vue";
-import TutorialView from "@/views/TutorialView.vue";
-import LezioniView from "@/views/LezioniView.vue";
+import RaccoltaView from "@/views/RaccoltaView.vue";
+import RicercaView from "@/views/RicercaView.vue";
 import GialloRossoView from "@/views/GialloRossoView.vue";
 import LoginView from '@/views/LoginView.vue';
 import LogoutView from '@/views/LogoutView.vue';
@@ -18,19 +16,14 @@ const routes = [
   },
   
    {
-    path: "/lezioni",
-    name: "lezioni",
-    component: LezioniView,
+    path: "/ricerca",
+    name: "ricerca",
+    component: RicercaView,
   },
   {
-    path: "/tutorial",
-    name: "tutorial",
-    component: TutorialView,
-  },
-   {
-    path: "/work",
-    name: "work",
-    component: WorkView,
+    path: "/raccolta",
+    name: "raccolta",
+    component: RaccoltaView,
   },
   {
     path: "/giallorosso",

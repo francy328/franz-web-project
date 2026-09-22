@@ -10,7 +10,6 @@ const schema = a.schema({
   Activities: a
     .model({
       nota: a.string(),
-      data: a.date(),
       categoria : a.string(),
       allegato: a.string()
     })

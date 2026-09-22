@@ -91,9 +91,8 @@ export default {
       isOpen: false,
       menuItems: [
         { text: "Home", url: { name: "Home" } },
-        { text: "Raccolta Esperienze", url: { name: "tutorial" } },
-        { text: "Università", url: { name: "lezioni" } },
-        { text: "Work", url: { name: "work" } },
+        { text: "Raccolta Esperienze", url: { name: "raccolta" } },
+        { text: "Ricerca Esperienze", url: { name: "ricerca" } },
         {
           text: "Asfalto sentieri e passione giallorossa",
           url: { name: "giallorosso" },
