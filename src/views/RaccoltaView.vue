@@ -113,6 +113,7 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { uploadData } from "aws-amplify/storage";
 import { computed } from "vue";
+// @ts-ignore
 import { useAuthStore } from "@/components/gestioneLogin";
 
 const authStore = useAuthStore();
