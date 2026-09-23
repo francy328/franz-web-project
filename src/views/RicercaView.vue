@@ -1,62 +1,165 @@
 <template>
-  <div class="flex flex-col min-h-screen items-center justify-center">
-    
-    <div v-if="isAuthenticated">
-      Ciao {{ user?.username }}
-    </div>
+  <div class="max-w-5xl mx-auto p-6 mt-20 bg-white rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-8 text-sky-600 text-center">
+      <div v-if="isAuthenticated">
+        Diario digitale di {{ user.signInDetails?.loginId }}
+      </div>
+      <div v-else>Utente non autenticato</div>
+    </h2>
+    <h3 class="text-2xl font-bold mb-6 text-gray-800 text-center">
+      Cerca tra le tue esperienze salvate.
+    </h3>
 
-    <div v-else>
-      Utente non autenticato
-    </div>
-  
-    <ul>
-      <li 
-        v-for="esperienza in esperienze" 
-        :key="esperienza.id">
-        {{ esperienza }}
-      </li>
-    </ul>
+     <div>
+      <label for="ricerca" class="block text-sm font-medium text-gray-700 mb-1">
+        📌 Testo da cercare
+      </label>
 
+      <input
+        id="ricerca"
+        v-model="stringaRicerca"
+        type="text"
+        placeholder="Inserisci il titolo dell'esperienza..."
+        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+      />
+    </div> 
+
+    <div>
+      <label
+        for="categoria"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Categoria
+      </label>
+      <select
+        v-model="categoriaSelezionata"
+      
+        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+      >
+        <option value="">Tutte</option>
+        <option value="lavoro">Lavoro</option>
+        <option value="universita">Università</option>
+        <option value="tempo_libero">Tempo libero</option>
+      </select>
+    </div>
+    <table class="w-full border border-gray-300 mt-6">
+      <thead>
+        <tr class="bg-gray-800 text-white">
+          <th class="px-4 py-2 text-left">Titolo esperienza</th>
+          <th class="px-4 py-2 text-left">Creata il</th>
+          <th class="px-4 py-2 text-left">Nota</th>
+          <th class="px-4 py-2 text-left">allegato</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          v-for="esperienza in esperienze"
+          :key="esperienza.id"
+          class="odd:bg-white even:bg-gray-100"
+        >
+          <td class="px-4 py-2 border-t">
+            {{ esperienza.titolo }}
+          </td>
+
+          <td class="px-4 py-2 border-t">
+            {{ esperienza.createdAt }}
+          </td>
+          <td class="px-4 py-2 border-t">
+            {{ esperienza.nota }}
+          </td>
+
+          <td class="px-4 py-3 text-center">
+            <button @click="scaricaFile(esperienza.allegato)">📥</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 // @ts-ignore
-import { useAuthStore } from '@/components/gestioneLogin'
+import { useAuthStore } from "@/components/gestioneLogin";
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import { ref,onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import { getUrl } from "aws-amplify/storage";
+import { watch } from "vue";
 
-
-
-
-const authStore = useAuthStore()
-const isAuthenticated = computed(() => authStore.authenticated)
-const user = computed(() => authStore.user)
-
+const authStore = useAuthStore();
+const isAuthenticated = computed(() => authStore.authenticated);
+const user = computed(() => authStore.user);
 
 const client = generateClient<Schema>();
 
 // create a reactive reference to the array of eperienze
-const esperienze = ref<Array<Schema['Activities']["type"]>>([]);
+const esperienze = ref<Array<Schema["Activities"]["type"]>>([]);
 
-// fetch todos when the component is mounted
- onMounted(() => {
+const categoriaSelezionata = ref("");
+
+const stringaRicerca = ref("");
+
+
+onMounted(() => {
   listEsperienze();
 });
 
 
-function listEsperienze() {
-  debugger;
-  client.models.Activities.observeQuery().subscribe({
-    next: ({ items, isSynced }) => {
-      esperienze.value = items
-      console.log(JSON.stringify(esperienze.value, null, 2));
-     },
-  }); 
+watch([categoriaSelezionata, stringaRicerca], () => {
+  listEsperienze();
+});
+
+async function listEsperienze() {
+
+  const { data } = await client.models.Activities.list({
+    filter: {
+      and: [
+        ...(categoriaSelezionata.value
+          ? [
+              {
+                categoria: {
+                  eq: categoriaSelezionata.value,
+                },
+              },
+            ]
+          : []),
+        ...(stringaRicerca.value
+          ? [
+              {
+                or: [
+                  {
+                    titolo: {
+                      contains: stringaRicerca.value,
+                    },
+                  },
+                  {
+                    nota: {
+                      contains: stringaRicerca.value,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
+    },
+  });
+
+  esperienze.value = data;
 }
 
 
+async function scaricaFile(allegato?: string) {
+  try {
+    const result = await getUrl({
+      path: allegato,
+    });
 
+    window.open(result.url.toString(), "_blank");
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
