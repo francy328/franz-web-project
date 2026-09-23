@@ -14,7 +14,7 @@ const schema = a.schema({
       categoria : a.string(),
       allegato: a.string()
     })
-    .authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [allow.owner()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -22,10 +22,10 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
-    // API Key is used for a.allow.public() rules
+    defaultAuthorizationMode: "userPool",
+    // API Key is used for a.allow.public() rules ',apiKey
     apiKeyAuthorizationMode: {
-      expiresInDays: 30,
+      expiresInDays: 10,
     },
   },
 });
