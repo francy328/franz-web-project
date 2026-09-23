@@ -109,41 +109,82 @@ watch([categoriaSelezionata, stringaRicerca], () => {
 });
 
 async function listEsperienze() {
-  const { data } = await client.models.Activities.list({
+
+let queryOptions = {};
+
+if (categoriaSelezionata.value || stringaRicerca.value) {
+  queryOptions = {
     filter: {
       and: [
         ...(categoriaSelezionata.value
-          ? [
-              {
-                categoria: {
-                  eq: categoriaSelezionata.value,
-                },
+          ? [{
+              categoria: {
+                eq: categoriaSelezionata.value,
               },
-            ]
+            }]
           : []),
+
         ...(stringaRicerca.value
-          ? [
-              {
-                or: [
-                  {
-                    titolo: {
-                      contains: stringaRicerca.value,
-                    },
+          ? [{
+              or: [
+                {
+                  titolo: {
+                    contains: stringaRicerca.value,
                   },
-                  {
-                    nota: {
-                      contains: stringaRicerca.value,
-                    },
+                },
+                {
+                  nota: {
+                    contains: stringaRicerca.value,
                   },
-                ],
-              },
-            ]
+                },
+              ],
+            }]
           : []),
       ],
     },
-  });
+  };
+}
 
-  esperienze.value = data;
+const { data } = await client.models.Activities.list(queryOptions);
+
+esperienze.value = data;
+
+
+  // const { data } = await client.models.Activities.list({
+  //   filter: {
+  //     and: [
+  //       ...(categoriaSelezionata.value
+  //         ? [
+  //             {
+  //               categoria: {
+  //                 eq: categoriaSelezionata.value,
+  //               },
+  //             },
+  //           ]
+  //         : []),
+  //       ...(stringaRicerca.value
+  //         ? [
+  //             {
+  //               or: [
+  //                 {
+  //                   titolo: {
+  //                     contains: stringaRicerca.value,
+  //                   },
+  //                 },
+  //                 {
+  //                   nota: {
+  //                     contains: stringaRicerca.value,
+  //                   },
+  //                 },
+  //               ],
+  //             },
+  //           ]
+  //         : []),
+  //     ],
+  //   },
+  // });
+
+  // esperienze.value = data;
 }
 
 async function scaricaFile(allegato: string | null | undefined) {
