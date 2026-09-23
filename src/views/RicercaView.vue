@@ -10,7 +10,7 @@
       Cerca tra le tue esperienze salvate.
     </h3>
 
-     <div>
+    <div>
       <label for="ricerca" class="block text-sm font-medium text-gray-700 mb-1">
         📌 Testo da cercare
       </label>
@@ -22,7 +22,7 @@
         placeholder="Inserisci il titolo dell'esperienza..."
         class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
       />
-    </div> 
+    </div>
 
     <div>
       <label
@@ -33,7 +33,6 @@
       </label>
       <select
         v-model="categoriaSelezionata"
-      
         class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
       >
         <option value="">Tutte</option>
@@ -101,18 +100,15 @@ const categoriaSelezionata = ref("");
 
 const stringaRicerca = ref("");
 
-
 onMounted(() => {
   listEsperienze();
 });
-
 
 watch([categoriaSelezionata, stringaRicerca], () => {
   listEsperienze();
 });
 
 async function listEsperienze() {
-
   const { data } = await client.models.Activities.list({
     filter: {
       and: [
@@ -150,9 +146,12 @@ async function listEsperienze() {
   esperienze.value = data;
 }
 
-
-async function scaricaFile(allegato?: string) {
+async function scaricaFile(allegato: string | null | undefined) {
   try {
+    if (!allegato) {
+      return;
+    }
+
     const result = await getUrl({
       path: allegato,
     });
