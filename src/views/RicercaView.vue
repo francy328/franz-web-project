@@ -133,7 +133,8 @@ const user = computed(() => authStore.user);
 const client = generateClient<Schema>();
 
 // create a reactive reference to the array of eperienze
-const esperienze = ref<Array<Schema["Activities"]["type"]>>([]);
+//const esperienze = ref<Array<Schema["Activities"]["type"]>>([]);
+const esperienze = ref<Attivita[]>([]);
 
 const categoriaSelezionata = ref("");
 
@@ -208,18 +209,22 @@ async function scaricaFile(allegato: string | null | undefined) {
   }
 }
 
-interface Esperienza {
-  id: string;
-  titolo: string;
-  nota: string;
-  createdAt: string;
-  allegato: string;
-}
+// interface Esperienza {
+//   id: string;
+//   titolo: string;
+//   nota: string;
+//   createdAt: string;
+//   allegato: string;
+// }
 
-const campoOrdinamento = ref<keyof Esperienza>("createdAt");
+type Attivita = Schema["Activities"]["type"];
+type CampoOrdinamento = "titolo" | "nota" | "categoria" | "createdAt";
+
+//const campoOrdinamento = ref<keyof Esperienza>("createdAt");
+const campoOrdinamento = ref<CampoOrdinamento>("createdAt");
 const versoOrdinamento = ref<"asc" | "desc">("desc");
 
-const ordinaPer = (campo: keyof Esperienza): void => {
+const ordinaPer = (campo: CampoOrdinamento): void => {
   if (campoOrdinamento.value === campo) {
     versoOrdinamento.value = versoOrdinamento.value === "asc" ? "desc" : "asc";
   } else {
@@ -228,34 +233,49 @@ const ordinaPer = (campo: keyof Esperienza): void => {
   }
 };
 
-const esperienzeOrdinate = computed<Esperienza[]>(() => {
-  return [...esperienze.value].sort((a, b) => {
-    // Ordinamento per data
+// const esperienzeOrdinate = computed<Esperienza[]>(() => {
+//   return [...esperienze.value].sort((a, b) => {
+//     // Ordinamento per data
+//     if (campoOrdinamento.value === "createdAt") {
+//       const dataA = new Date(a.createdAt).getTime();
+//       const dataB = new Date(b.createdAt).getTime();
+
+//       return versoOrdinamento.value === "asc" ? dataA - dataB : dataB - dataA;
+//     }
+
+//     // Ordinamento alfabetico per le altre colonne
+//     const valoreA = String(a[campoOrdinamento.value] ?? "");
+//     const valoreB = String(b[campoOrdinamento.value] ?? "");
+
+//     return versoOrdinamento.value === "asc"
+//       ? valoreA.localeCompare(valoreB, "it")
+//       : valoreB.localeCompare(valoreA, "it");
+//   });
+// });
+
+const esperienzeOrdinate = computed(() => {
+  return [...esperienze.value].sort((a, b): number => {
     if (campoOrdinamento.value === "createdAt") {
       const dataA = new Date(a.createdAt).getTime();
       const dataB = new Date(b.createdAt).getTime();
-
       return versoOrdinamento.value === "asc" ? dataA - dataB : dataB - dataA;
     }
-
-    // Ordinamento alfabetico per le altre colonne
-    const valoreA = String(a[campoOrdinamento.value] ?? "");
-    const valoreB = String(b[campoOrdinamento.value] ?? "");
-
+    const valoreA = a[campoOrdinamento.value] ?? "";
+    const valoreB = b[campoOrdinamento.value] ?? "";
     return versoOrdinamento.value === "asc"
       ? valoreA.localeCompare(valoreB, "it")
       : valoreB.localeCompare(valoreA, "it");
   });
 });
 
-
 const eliminaEsperienza = async (id: string): Promise<void> => {
   const conferma = confirm("Sei sicuro di voler eliminare questa esperienza?");
 
   if (!conferma) return;
 
-   client.models.Activities.delete({ id });
-   listEsperienze();
+  client.models.Activities.delete({ id });
+  listEsperienze();
 };
 
+type Test = Schema["Activities"]["type"];
 </script>
