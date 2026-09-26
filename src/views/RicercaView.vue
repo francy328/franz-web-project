@@ -42,18 +42,48 @@
       </select>
     </div>
     <table class="w-full border border-gray-300 mt-6">
-      <thead>
+      <!-- <thead>
         <tr class="bg-gray-800 text-white">
           <th class="px-4 py-2 text-left">Titolo esperienza</th>
           <th class="px-4 py-2 text-left">Creata il</th>
           <th class="px-4 py-2 text-left">Nota</th>
           <th class="px-4 py-2 text-left">allegato</th>
         </tr>
+      </thead> -->
+      <thead>
+        <tr class="bg-gray-800 text-white">
+          <th
+            @click="ordinaPer('titolo')"
+            class="px-4 py-2 text-left cursor-pointer"
+          >
+            Titolo esperienza
+          </th>
+
+          <th
+            @click="ordinaPer('createdAt')"
+            class="px-4 py-2 text-left cursor-pointer"
+          >
+            Creata il
+            <span v-if="campoOrdinamento === 'createdAt'">
+              {{ versoOrdinamento === "asc" ? "▲" : "▼" }}
+            </span>
+          </th>
+
+          <th
+            @click="ordinaPer('nota')"
+            class="px-4 py-2 text-left cursor-pointer"
+          >
+            Nota
+          </th>
+
+          <th class="px-4 py-2 text-left">Allegato</th>
+          <th class="px-4 py-2 text-center">Elimina</th>
+        </tr>
       </thead>
 
       <tbody>
         <tr
-          v-for="esperienza in esperienze"
+          v-for="esperienza in esperienzeOrdinate"
           :key="esperienza.id"
           class="odd:bg-white even:bg-gray-100"
         >
@@ -70,6 +100,15 @@
 
           <td class="px-4 py-3 text-center">
             <button @click="scaricaFile(esperienza.allegato)">📥</button>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <button
+              @click="eliminaEsperienza(esperienza.id)"
+              class="text-red-600 hover:text-red-800"
+              title="Elimina esperienza"
+            >
+              🗑️
+            </button>
           </td>
         </tr>
       </tbody>
@@ -109,82 +148,48 @@ watch([categoriaSelezionata, stringaRicerca], () => {
 });
 
 async function listEsperienze() {
+  let queryOptions = {};
 
-let queryOptions = {};
-
-if (categoriaSelezionata.value || stringaRicerca.value) {
-  queryOptions = {
-    filter: {
-      and: [
-        ...(categoriaSelezionata.value
-          ? [{
-              categoria: {
-                eq: categoriaSelezionata.value,
-              },
-            }]
-          : []),
-
-        ...(stringaRicerca.value
-          ? [{
-              or: [
+  if (categoriaSelezionata.value || stringaRicerca.value) {
+    queryOptions = {
+      filter: {
+        and: [
+          ...(categoriaSelezionata.value
+            ? [
                 {
-                  titolo: {
-                    contains: stringaRicerca.value,
+                  categoria: {
+                    eq: categoriaSelezionata.value,
                   },
                 },
+              ]
+            : []),
+
+          ...(stringaRicerca.value
+            ? [
                 {
-                  nota: {
-                    contains: stringaRicerca.value,
-                  },
+                  or: [
+                    {
+                      titolo: {
+                        contains: stringaRicerca.value,
+                      },
+                    },
+                    {
+                      nota: {
+                        contains: stringaRicerca.value,
+                      },
+                    },
+                  ],
                 },
-              ],
-            }]
-          : []),
-      ],
-    },
-  };
-}
+              ]
+            : []),
+        ],
+      },
+    };
+  }
 
-const { data } = await client.models.Activities.list(queryOptions);
+  const { data } = await client.models.Activities.list(queryOptions);
 
-esperienze.value = data;
-
-
-  // const { data } = await client.models.Activities.list({
-  //   filter: {
-  //     and: [
-  //       ...(categoriaSelezionata.value
-  //         ? [
-  //             {
-  //               categoria: {
-  //                 eq: categoriaSelezionata.value,
-  //               },
-  //             },
-  //           ]
-  //         : []),
-  //       ...(stringaRicerca.value
-  //         ? [
-  //             {
-  //               or: [
-  //                 {
-  //                   titolo: {
-  //                     contains: stringaRicerca.value,
-  //                   },
-  //                 },
-  //                 {
-  //                   nota: {
-  //                     contains: stringaRicerca.value,
-  //                   },
-  //                 },
-  //               ],
-  //             },
-  //           ]
-  //         : []),
-  //     ],
-  //   },
-  // });
-
-  // esperienze.value = data;
+  esperienze.value = data;
 }
 
 async function scaricaFile(allegato: string | null | undefined) {
@@ -202,4 +207,55 @@ async function scaricaFile(allegato: string | null | undefined) {
     console.error(error);
   }
 }
+
+interface Esperienza {
+  id: number;
+  titolo: string;
+  nota: string;
+  createdAt: string;
+  allegato: string;
+}
+
+const campoOrdinamento = ref<keyof Esperienza>("createdAt");
+const versoOrdinamento = ref<"asc" | "desc">("desc");
+
+const ordinaPer = (campo: keyof Esperienza): void => {
+  if (campoOrdinamento.value === campo) {
+    versoOrdinamento.value = versoOrdinamento.value === "asc" ? "desc" : "asc";
+  } else {
+    campoOrdinamento.value = campo;
+    versoOrdinamento.value = "asc";
+  }
+};
+
+const esperienzeOrdinate = computed<Esperienza[]>(() => {
+  return [...esperienze.value].sort((a, b) => {
+    // Ordinamento per data
+    if (campoOrdinamento.value === "createdAt") {
+      const dataA = new Date(a.createdAt).getTime();
+      const dataB = new Date(b.createdAt).getTime();
+
+      return versoOrdinamento.value === "asc" ? dataA - dataB : dataB - dataA;
+    }
+
+    // Ordinamento alfabetico per le altre colonne
+    const valoreA = String(a[campoOrdinamento.value] ?? "");
+    const valoreB = String(b[campoOrdinamento.value] ?? "");
+
+    return versoOrdinamento.value === "asc"
+      ? valoreA.localeCompare(valoreB, "it")
+      : valoreB.localeCompare(valoreA, "it");
+  });
+});
+
+
+const eliminaEsperienza = async (id: number): Promise<void> => {
+  const conferma = confirm("Sei sicuro di voler eliminare questa esperienza?");
+
+  if (!conferma) return;
+
+   client.models.Activities.delete({ id });
+   listEsperienze();
+};
+
 </script>
