@@ -209,7 +209,7 @@ async function scaricaFile(allegato: string | null | undefined) {
 }
 
 interface Esperienza {
-  id: number;
+  id: string;
   titolo: string;
   nota: string;
   createdAt: string;
@@ -249,7 +249,7 @@ const esperienzeOrdinate = computed<Esperienza[]>(() => {
 });
 
 
-const eliminaEsperienza = async (id: number): Promise<void> => {
+const eliminaEsperienza = async (id: string): Promise<void> => {
   const conferma = confirm("Sei sicuro di voler eliminare questa esperienza?");
 
   if (!conferma) return;
